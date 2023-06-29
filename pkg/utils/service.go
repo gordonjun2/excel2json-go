@@ -1,12 +1,12 @@
-package excel2json
+package utils
 
 import (
 	"io/ioutil"
 )
 
-// getFilePath fetch file body with http client
+// GetFilePath fetch file body with http client
 // filePath string url
-func getFilePath(filePath string) ([]byte, error) {
+func GetFilePath(filePath string) ([]byte, error) {
 	var (
 		body []byte
 		err  error

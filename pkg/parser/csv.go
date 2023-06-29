@@ -1,4 +1,4 @@
-package excel2json
+package parser
 
 import (
 	"bytes"
@@ -6,9 +6,15 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/patrickmn/go-cache"
 )
 
-func parseCsvFileData(byteFile []byte, delimiter, keyName string) ([]*map[string]interface{}, error) {
+type Cache struct {
+	// contains filtered or unexported fields
+}
+
+func ParseCsvFileData(byteFile []byte, delimiter, keyName string, localCache *cache.Cache) ([]*map[string]interface{}, error) {
 	var (
 		result    []*map[string]interface{}
 		err       error

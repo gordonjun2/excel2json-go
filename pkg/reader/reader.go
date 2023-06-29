@@ -1,4 +1,4 @@
-package excel2json
+package reader
 
 import (
 	"fmt"
@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/patrickmn/go-cache"
+	"github.com/gordonjun2/excel2json-go/pkg/utils"
+	"github.com/gordonjun2/excel2json-go/pkg/parser"
 )
 
 // Create a cache with a default expiration time of 5 minutes, and which
@@ -22,14 +24,14 @@ func GetExcelFilePath(path, sheetName string, headers []string) ([]*map[string]i
 		err      error
 		byteFile []byte
 	)
-	if byteFile, err = getFilePath(path); err != nil {
+	if byteFile, err = utils.GetFilePath(path); err != nil {
 		return nil, err
 	}
-	if result, err = parseExcelFileData(path, byteFile, sheetName); err != nil {
+	if result, err = parser.ParseExcelFileData(path, byteFile, sheetName, localCache); err != nil {
 		return nil, err
 	}
 	if len(headers) > 0 {
-		result = filterDataHeaders(mapHeaders(headers), result)
+		result = utils.FilterDataHeaders(utils.MapHeaders(headers), result)
 	}
 	return result, nil
 }
@@ -43,16 +45,16 @@ func GetCsvFilePath(path, delimiter string, headers []string) ([]*map[string]int
 		result   []*map[string]interface{}
 		err      error
 		byteFile []byte
-		keyName  = hashKeyString(fmt.Sprintf(`%s||%s||%s`, path, delimiter, strings.Join(headers, "||")))
+		keyName  = utils.HashKeyString(fmt.Sprintf(`%s||%s||%s`, path, delimiter, strings.Join(headers, "||")))
 	)
-	if byteFile, err = getFilePath(path); err != nil {
+	if byteFile, err = utils.GetFilePath(path); err != nil {
 		return nil, err
 	}
-	if result, err = parseCsvFileData(byteFile, delimiter, keyName); err != nil {
+	if result, err = parser.ParseCsvFileData(byteFile, delimiter, keyName, localCache); err != nil {
 		return nil, err
 	}
 	if len(headers) > 0 {
-		result = filterDataHeaders(mapHeaders(headers), result)
+		result = utils.FilterDataHeaders(utils.MapHeaders(headers), result)
 	}
 	return result, nil
 }

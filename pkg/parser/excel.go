@@ -1,4 +1,4 @@
-package excel2json
+package parser
 
 import (
 	"bytes"
@@ -7,13 +7,15 @@ import (
 	"time"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
+	"github.com/patrickmn/go-cache"
+	"github.com/gordonjun2/excel2json-go/pkg/utils"
 )
 
-// parseExcelFileData to read all data excel
+// ParseExcelFileData to read all data excel
 // data is byte data from http client
 // keyName is string concat
 // sheetName is string
-func parseExcelFileData(filePath string, data []byte, sheetName string) ([]*map[string]interface{}, error) {
+func ParseExcelFileData(filePath string, data []byte, sheetName string, localCache *cache.Cache) ([]*map[string]interface{}, error) {
 	var (
 		headers []string
 		result  []*map[string]interface{}
@@ -23,7 +25,7 @@ func parseExcelFileData(filePath string, data []byte, sheetName string) ([]*map[
 	)
 
 	if sheetName != "" {
-		keyName = hashKeyString(fmt.Sprintf(`%s||%s||%s`, filePath, sheetName, strings.Join(headers, "||")))
+		keyName = utils.HashKeyString(fmt.Sprintf(`%s||%s||%s`, filePath, sheetName, strings.Join(headers, "||")))
 
 		// if already data in cache
 		if cacheData, found := localCache.Get(keyName); found {
@@ -42,7 +44,7 @@ func parseExcelFileData(filePath string, data []byte, sheetName string) ([]*map[
 
 		sheetName = wb.GetSheetName(1)
 
-		keyName = hashKeyString(fmt.Sprintf(`%s||%s||%s`, filePath, sheetName, strings.Join(headers, "||")))
+		keyName = utils.HashKeyString(fmt.Sprintf(`%s||%s||%s`, filePath, sheetName, strings.Join(headers, "||")))
 
 		// if already data in cache
 		if cacheData, found := localCache.Get(keyName); found {

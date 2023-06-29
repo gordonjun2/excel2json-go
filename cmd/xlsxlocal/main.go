@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/gordonjun2/excel2json/pkg/excel2json"
+	"github.com/gordonjun2/excel2json-go/pkg/reader"
 )
 
 func main() {
@@ -36,7 +36,7 @@ func main() {
 		fmt.Println(path)
 	}
 
-	if result, err = excel2json.GetExcelFilePath(path, sheetName, headers); err != nil {
+	if result, err = reader.GetExcelFilePath(path, sheetName, headers); err != nil {
 		log.Fatalf(`unable to parse file, error: %s`, err)
 	}
 
