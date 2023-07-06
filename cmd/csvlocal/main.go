@@ -17,9 +17,9 @@ func main() {
 		// select only selected field
 		// if you want to show all headers just passing nil or empty list
 		// eg. headers   = []string{"humidity", "sound"}
-		headers   = []string{}
-		delimited = ","
-		jsonList  = []string{}
+		headers    = []string{}
+		delimited  = ","
+		jsonString = "["
 	)
 
 	if len(os.Args) >= 2 {
@@ -39,10 +39,15 @@ func main() {
 
 	fmt.Println("\nOutput JSON:")
 
-	for _, val := range result {
+	for i, val := range result {
 		result, _ := json.Marshal(val)
-		jsonList = append(jsonList, string(result))
+		if i != 0 {
+			jsonString = jsonString + ", "
+		}
+		jsonString = jsonString + string(result)
 	}
 
-	fmt.Println(jsonList)
+	jsonString = jsonString + "]"
+
+	fmt.Println(jsonString)
 }
